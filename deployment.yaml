@@ -36,6 +36,8 @@ spec:
        image: outsurance.azurecr.io/eventhublistenerack
        imagePullPolicy: Always
        name: eventlistener
+       imagePullSecrets:
+       - name: az-aks-challenge
 ---
 apiVersion: v1
 kind: Service
