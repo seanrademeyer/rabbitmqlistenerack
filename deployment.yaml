@@ -1,1 +1,38 @@
-{  "kind": "Deployment",  "apiVersion": "extensions/v1beta1",  "metadata": {    "name": "eventlistner",    "namespace": "default",    "selfLink": "/apis/extensions/v1beta1/namespaces/default/deployments/eventlistner",    "uid": "4c572f86-31be-11e8-a000-0a58ac1f16d8",    "resourceVersion": "27102",    "generation": 3,    "creationTimestamp": "2018-03-27T12:56:42Z",    "labels": {      "app": "eventlistener"    },    "annotations": {      "deployment.kubernetes.io/revision": "1"    }  },  "spec": {    "replicas": 5,    "selector": {      "matchLabels": {        "app": "eventlistener"      }    },    "template": {      "metadata": {        "creationTimestamp": null,        "labels": {          "app": "eventlistener"        }      },      "spec": {        "containers": [          {            "name": "eventlistener",            "image": "sabbour/eventhublistenerack",            "env": [              {                "name": "TEAMNAME",                "value": "honey-badgers"              },              {                "name": "EVENTHUBCONNSTRING",                "value": "Endpoint=sb://k8-hack-eventhub.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=Ws9MR7LQNzHy1xEpfzjZ5zkl/uuZ/QlihXRqARu4IsQ="              },              {                "name": "EVENTHUBPATH",                "value": "k8-hack-eventhub"              },              {                "name": "PROCESSENDPOINT",                "value": "http://fulfillorder.default:8080/v1/order/"              }            ],            "resources": {},            "terminationMessagePath": "/dev/termination-log",            "terminationMessagePolicy": "File",            "imagePullPolicy": "Always"          }        ],        "restartPolicy": "Always",        "terminationGracePeriodSeconds": 30,        "dnsPolicy": "ClusterFirst",        "securityContext": {},        "schedulerName": "default-scheduler"      }    },    "strategy": {      "type": "RollingUpdate",      "rollingUpdate": {        "maxUnavailable": 1,        "maxSurge": 1      }    }  },  "status": {    "observedGeneration": 3,    "replicas": 5,    "updatedReplicas": 5,    "readyReplicas": 5,    "availableReplicas": 5,    "conditions": [      {        "type": "Available",        "status": "True",        "lastUpdateTime": "2018-03-27T13:30:23Z",        "lastTransitionTime": "2018-03-27T13:30:23Z",        "reason": "MinimumReplicasAvailable",        "message": "Deployment has minimum availability."      }    ]  }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+ labels:
+   app: az-aks-challenge
+   component: eventlistener
+ name: eventlistner
+spec:
+ replicas: 1
+ selector:
+   matchLabels:
+     app: az-aks-challenge
+     component: eventlistener
+ strategy:
+   rollingUpdate:
+     maxSurge: 1
+     maxUnavailable: 1
+   type: RollingUpdate
+ template:
+   metadata:
+     creationTimestamp: null
+     labels:
+       app: az-aks-challenge
+       component: eventlistener
+   spec:
+     containers:
+     - env:
+       - name: TEAMNAME
+         value: honey-badgers
+       - name: EVENTHUBCONNSTRING
+         value: Endpoint=sb://k8-hack-eventhub.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=Ws9MR7LQNzHy1xEpfzjZ5zkl/uuZ/QlihXRqARu4IsQ=
+       - name: EVENTHUBPATH
+         value: k8-hack-eventhub
+       - name: PROCESSENDPOINT
+         value: http://fulfillorder:80/v1/order/
+       image: outsurance.azurecr.io/eventhublistenerack
+       imagePullPolicy: Always
+       name: eventlistener
