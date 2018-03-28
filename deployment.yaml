@@ -32,7 +32,20 @@ spec:
        - name: EVENTHUBPATH
          value: k8-hack-eventhub
        - name: PROCESSENDPOINT
-         value: http://fulfillorder:80/v1/order/
+         value: http://fulfillorder:8080/v1/order/
        image: outsurance.azurecr.io/eventhublistenerack
        imagePullPolicy: Always
        name: eventlistener
+---
+apiVersion: v1
+kind: Service
+metadata:
+ name: eventlistener
+spec:
+ ports:
+ - port: 80
+   targetPort: 80
+ selector:
+   app: az-aks-challenge
+   component: eventlistener
+ type: ClusterIP
